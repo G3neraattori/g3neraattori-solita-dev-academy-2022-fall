@@ -8,10 +8,14 @@ const mongoose = require('mongoose')
 const mongocfg = require('./configs/dbconfig')
 const data = require('./routes/citybikes')
 
+//node app.js collect
+if(process.argv.slice(2)[0] === 'collect'){
+    console.log('Collecting data, please wait')
+    //TODO data collection
+}
 
 const app = express();
 const port = 3000;
-
 
 mongoose.connect(mongocfg.database);
 mongoose.connection.on('connected', () =>{
