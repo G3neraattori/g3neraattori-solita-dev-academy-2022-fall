@@ -3,8 +3,9 @@ const fs = require('fs');
 const mongoose = require('mongoose')
 const cfg = require('../configs/dbconfig')
 const date = new Date();
-const csv = require('csv-parse') //Decided not to reinvent the wheel and used an existing library for large CSV-files
-
+const Citybikes = require('./schemas')
+const path = require("path");
+const exec = require('child_process').exec
 
 module.exports = {
     downloadData: function (){
@@ -45,15 +46,30 @@ module.exports = {
         console.log(`${urls.length} Files downloaded`)
     },
 
-    parseData: function (){
-        fs.createReadStream('')
-            .pipe(csv())
-            .on('data', function (row) {
-                data.push(row)
-            })
-            .on('end', function () {
-                console.log('')
-            })
+    parseData: function(){
+        let toParse = [];
+        fs.readdir('../temp/', (err, files) => {
+            files.forEach(file => {
+                //console.log(`${path.resolve('../')}/temp/${file}`)
+                toParse.push(`${path.resolve('../')}/temp/${file}`)
+            });
+            for(let i = 0; i < toParse.length; i++){
+                console.log(toParse[i])
+                let command = `mongoimport --host=127.0.0.1:27017 -d citybikes -c citybikes --type csv --file ${toParse[i]} --headerline`
+
+                exec(command, (err, stdout, stderr) => {
+                    // check for errors or if it was succesfuly
+                    console.log(err)
+                    console.log(stdout)
+                    console.log(stderr)
+                })
+            }
+        });
+
+
+
     }
+
 }
 
+module.exports.parseData()
