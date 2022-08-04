@@ -7,11 +7,14 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const mongocfg = require('./configs/dbconfig')
 const data = require('./routes/citybikes')
+const database = require('./database/dataparser')
+
+
 
 //node app.js collect
 if(process.argv.slice(2)[0] === 'collect'){
     console.log('Collecting data, please wait')
-    //TODO data collection
+    database.downloadData();
 }
 
 const app = express();
